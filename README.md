@@ -1,3 +1,3 @@
 ### Hi there 👋
 
-- 📓 [Notes]([https://matvii.hodovani.uk)](https://hodovani.github.io/).
+- [Notes](https://hodovani.github.io/).
