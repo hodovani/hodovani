@@ -1,8 +1,8 @@
-### Hi there 👋
+### Hi there
 
 - [Notes](https://hodovani.github.io/)
 
-### 📝 Latest Blog Posts
+### Latest Blog Posts
 <!-- BLOG-POST-LIST:START -->
 - [Building a Frameworkless Multi-Step Form: Web Components, A11y, and Upfront System Design](https://hodovani.github.io/2026/08/25/building-a-frameworkless-multi-step-form.html) (Aug 25, 2026)
 - [Leetcoding For 1 Week](https://hodovani.github.io/2026/07/31/leetcoding-for-1-week.html) (Jul 31, 2026)
