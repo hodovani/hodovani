@@ -1,6 +1,13 @@
-### Hi there
+### Product-Focused Fullstack Engineer
 
-- [Notes](https://hodovani.github.io/)
+Building end-to-end web applications with a focus on product outcomes over just code. I leverage native web standards, clean architecture, and AI-assisted workflows to build polished, accessible experiences with high velocity.
+
+- [Website & Notes](https://hodovani.github.io/)
+- [LinkedIn](https://www.linkedin.com/in/hodovani/)
+
+### Featured Projects
+- [hodovani.github.io](https://github.com/hodovani/hodovani.github.io) — Personal website, blog, and experiments built with Jekyll & Web Components.
+- [AI Guardrail Policy Builder](https://hodovani.github.io/projects/multi-step-form/) — Frameworkless multi-step form built with native Web Components and a11y.
 
 ### Latest Blog Posts
 <!-- BLOG-POST-LIST:START -->
