@@ -1,0 +1,73 @@
+name: Latest Blog Posts
+
+on:
+  schedule:
+    # Runs daily at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allows manual trigger anytime from the Actions tab
+
+jobs:
+  update-readme:
+    name: Update README with latest blog posts
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Sync Blog Posts to README
+        shell: python
+        run: |
+          import urllib.request
+          import xml.etree.ElementTree as ET
+          import re
+          from datetime import datetime
+
+          FEED_URL = "https://hodovani.github.io/feed.xml"
+          MAX_POSTS = 5
+
+          req = urllib.request.Request(FEED_URL, headers={"User-Agent": "GitHubAction/1.0"})
+          with urllib.request.urlopen(req) as resp:
+              xml_data = resp.read()
+
+          root = ET.fromstring(xml_data)
+          ns = {"atom": "http://www.w3.org/2005/Atom"}
+
+          posts = []
+          for entry in root.findall("atom:entry", ns)[:MAX_POSTS]:
+              title = entry.find("atom:title", ns).text.strip()
+              link_elem = entry.find("atom:link[@rel='alternate']", ns)
+              if link_elem is None:
+                  link_elem = entry.find("atom:link", ns)
+              link = link_elem.attrib["href"]
+
+              pub = entry.find("atom:published", ns)
+              date_str = ""
+              if pub is not None and pub.text:
+                  dt = datetime.strptime(pub.text[:10], "%Y-%m-%d")
+                  date_str = f" ({dt.strftime('%b %d, %Y')})"
+
+              posts.append(f"- [{title}]({link}){date_str}")
+
+          new_block = "<!-- BLOG-POST-LIST:START -->\n" + "\n".join(posts) + "\n<!-- BLOG-POST-LIST:END -->"
+
+          with open("README.md", "r", encoding="utf-8") as f:
+              content = f.read()
+
+          updated_content = re.sub(
+              r"<!-- BLOG-POST-LIST:START -->.*?<!-- BLOG-POST-LIST:END -->",
+              new_block,
+              content,
+              flags=re.DOTALL,
+          )
+
+          with open("README.md", "w", encoding="utf-8") as f:
+              f.write(updated_content)
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update latest blog posts" && git push)
