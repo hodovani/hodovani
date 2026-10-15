@@ -25,7 +25,7 @@ jobs:
           from datetime import datetime
 
           FEED_URL = "https://hodovani.github.io/feed.xml"
-          MAX_POSTS = 5
+          MAX_POSTS = 3
 
           req = urllib.request.Request(FEED_URL, headers={"User-Agent": "GitHubAction/1.0"})
           with urllib.request.urlopen(req) as resp:
@@ -55,12 +55,21 @@ jobs:
           with open("README.md", "r", encoding="utf-8") as f:
               content = f.read()
 
-          updated_content = re.sub(
+          # Only the generated list is managed here; preserve the profile copy.
+          start_marker = "<!-- BLOG-POST-LIST:START -->"
+          end_marker = "<!-- BLOG-POST-LIST:END -->"
+          if content.count(start_marker) != 1 or content.count(end_marker) != 1:
+              raise ValueError("README must contain exactly one blog-post marker pair")
+
+          updated_content, replacements = re.subn(
               r"<!-- BLOG-POST-LIST:START -->.*?<!-- BLOG-POST-LIST:END -->",
-              new_block,
+              lambda match: new_block,
               content,
               flags=re.DOTALL,
           )
+
+          if replacements != 1:
+              raise ValueError("Blog-post markers must appear in the expected order")
 
           with open("README.md", "w", encoding="utf-8") as f:
               f.write(updated_content)
@@ -71,3 +80,4 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
           git diff --quiet && git diff --staged --quiet || (git commit -m "Update latest blog posts" && git push)
+
